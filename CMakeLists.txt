@@ -6,54 +6,47 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 option(BUILD_COVERAGE "Build coverage" OFF)
 
 set(
-  HUNTER_CACHE_SERVERS
-  "https://github.com/bmstu-iu8-cpp-sem-3/hunter-cache"
-  CACHE STRING "Default cache server"
+        HUNTER_CACHE_SERVERS
+        "https://github.com/bmstu-iu8-cpp-sem-3/hunter-cache"
+        CACHE STRING "Default cache server"
 )
 
 include("tools/gate/cmake/HunterGate.cmake")
 
 huntergate(
-  URL "https://github.com/ruslo/hunter/archive/v0.23.34.tar.gz"
-  SHA1 "70287b1ffa810ee4e952052a9adff9b4856d0d54"
+        URL "https://github.com/ruslo/hunter/archive/v0.23.34.tar.gz"
+        SHA1 "70287b1ffa810ee4e952052a9adff9b4856d0d54"
 )
 
-# TODO: rename project and delete this comment
-project(lab)
+project(shared_ptr)
+string(APPEND CMAKE_CXX_FLAGS " -pedantic -Werror -Wall -Wextra")
+string(APPEND CMAKE_CXX_FLAGS " -Wno-unused-command-line-argument")
+string(APPEND CMAKE_CXX_FLAGS " -Wshadow -Wnon-virtual-dtor")
 
 hunter_add_package(GTest)
 find_package(GTest CONFIG REQUIRED)
 
-# TODO: change lab word to project name and delete this comment
-add_library(lab STATIC
-  # enum your files and delete this comment
-  ${CMAKE_CURRENT_SOURCE_DIR}/sources/source.cpp
-)
+add_library(shared_ptr STATIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/sources/shared_ptr.cpp
+        )
 add_executable(tests
-  # TODO: enum your files and delete this comment
-  ${CMAKE_CURRENT_SOURCE_DIR}/tests/test.cpp
-)
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/test.cpp
+        )
 
-# TODO: change lab word to project name and delete this comment
-target_include_directories(lab 
-  PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include
-)
-target_include_directories(tests 
-  PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include
-)
-# TODO: change lab word to project name and delete this comment
-target_link_libraries(tests GTest::main lab)
+target_include_directories(shared_ptr PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_include_directories(tests PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
+target_link_libraries(tests GTest::main shared_ptr)
 
 enable_testing()
-add_test(NAME unit_tests COMMAND tests) 
+add_test(NAME unit_tests COMMAND tests)
 
-if(BUILD_COVERAGE)
-  set(ENABLE_COVERAGE ON CACHE BOOL "Enable coverage build." FORCE)
-  list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-  find_package(codecov)
-  # TODO: change lab word to project name and delete this comment
-  add_coverage(lab)
-  add_coverage(tests)
-  list(APPEND LCOV_REMOVE_PATTERNS "'${PROJECT_SOURCE_DIR}/tests/*'")
-  coverage_evaluate()
-endif()
+if (BUILD_COVERAGE)
+    set(ENABLE_COVERAGE ON CACHE BOOL "Enable coverage build." FORCE)
+    list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+    find_package(codecov)
+    add_coverage(shared_ptr)
+    add_coverage(tests)
+    list(APPEND LCOV_REMOVE_PATTERNS "'${PROJECT_SOURCE_DIR}/tests/*'")
+    coverage_evaluate()
+endif ()
