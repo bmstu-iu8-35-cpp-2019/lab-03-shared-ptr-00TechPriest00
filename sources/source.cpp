@@ -1,3 +1,3 @@
-// Copyright 2018 Fedorov james.sayfer2015@yandex.ru
+// Copyright 2018 Your Name <your_email>
 
-#include <shared_ptr.hpp>
+#include <header.hpp>
